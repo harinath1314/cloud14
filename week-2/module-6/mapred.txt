@@ -1,0 +1,40 @@
+
+
+
+--Running mapreduce job
+--extract the data.zip you will see data folder with the following files
+--mapper.py (mapper code)
+--reducer.py (reducer code)
+--input (input folder which contains input files)
+docker run -v  xa{path to data folder}:/root/data/ -it sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash
+
+--example
+docker run -v  /home/sukesh/Desktop/data/:/root/data/ -it sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash^C
+
+--give executable permissions to mapper and reducer
+chmod +x /root/data/mapper.py
+chmod +x /root/data/reducer.py
+
+cd $HADOOP_PREFIX
+
+--make directory called input in dfs
+
+bin/hadoop dfs -mkdir /user/input
+
+--upload local data to dfs
+
+bin/hadoop dfs -copyFromLocal /root/data/input/ /user/
+
+cp out.txt /root/data/
+--run mapreduce  job
+bin/hadoop jar share/hadoop/tools/lib/hadoop-streaming-2.7.1.jar -mapper /root/data/mapper.py -reducer /root/data/reducer.py -input /user/input -output /user/output
+
+--print output
+bin/hdfs dfs -cat /user/output/*
+
+--save output
+bin/hadoop dfs -cat /user/output/* | out.txt
+
+--export output file from docker
+cp out.txt /root/data/
+
