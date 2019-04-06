@@ -1,1 +1,2 @@
-# cloud14
+# heroku-shoppingcart
+Shopping cart app
